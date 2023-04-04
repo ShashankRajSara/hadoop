@@ -1,0 +1,32 @@
+ 
+Purpose: to demonstrate the data analysis, reporting skills and tools you have learned in this course. 
+Weight 20% - Presentation submission date will be shared by the instructor 
+
+- Find some data that you think is interesting (ex: video game stats, sports stats, car sales, banking information, world stats) and think of three questions you would can answer with the data.
+How much data should be there (min 1 year)/# of rows – (min 3000 rows)
+- Part I: Using query and functions 
+Clean the data, create database in SSMS, add table to database, run at least five different queries to manipulate data and add the query screenshots in the PPT 
+- Use MS Excel or Google data sheet to use at least 3 functions to manipulate data.  Functions example: linear forecasting, slope, intercept etc. Add the function result screenshots in the PPT
+- Part II: Visualization 
+1 visualization must be done with Report Builder. 
+- The other 2 visualizations can be done with the tool of your choice (PowerBI, Excel, Google Data Studio, Tableau, or any other tool of your choice)
+Add the visualization screenshots in the PPT
+
+
+
+
+
+
+In the above Project, We have to first get the Dataset, and has to perform below mentioned operations:
+
+1. We have to Create database and table and have to clean the dataset and perform at least 5 queries to manipulate and aggregating. In this case the challenging part is to clean the data using SQL, this itself will consume most of the time. And for writing the queries itself we need more than 1Hr.
+
+2. In the next part, we need to work on Excel. We have to perform 3 functions which are linear forcasting, slope intercept etc. Here Linear forcasting and slope intercept it self will take more than 2 Hrs to complete. In this one of the challenging part in the project.
+
+3. In this part we need to build 1 report in Report builder and 2 Vizualization dashboards in Power BI. The power BI alone will take more than 2 Hrs to complete, as we have to design 2 Dashboards.
+
+In total, I have to work on getting the Dataset, SSMS, Excel, Report Builder and Power BI. So It takes more than 6 Hrs to complete. But as this is our 2nd project together, I'm just asking you for 6Hrs.
+
+If you think this would take less than 6 Hrs to complete. Let's follow the other way around. "Let's connect on Zoom, and pay me only the Hours I work to complete the project".
+
+Please give it a thought, and let me know.

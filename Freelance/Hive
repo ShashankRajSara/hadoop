@@ -1,0 +1,164 @@
+--1. CSV
+
+CREATE EXTERNAL TABLE etinosa_nyc_csv (
+    UniqueKey INT,	CreatedDate String,	ClosedDate	String, Agency String,	AgencyName String,	ComplaintType String,	
+    Descriptor String,	LocationType String,	IncidentZip INT ,	IncidentAddress String,	StreetName String,	
+    CrossStreet1 String,	CrossStreet2 String,	IntersectionStreet1 String,
+	IntersectionStreet2 String ,	AddressType String,	City String ,	Landmark String ,	
+    FacilityType String,	Status String ,	DueDate String,	ResolutionDescription String,	ResolutionActionUpdatedDate String ,
+    CommunityBoard String,	BBL INT, Borough String ,	XCoordinate INT,	YCoordinate INT,	
+    OpenDataChannelType String, ParkFacilityName String	, ParkBorough String	,VehicleType String, 	
+    TaxiCompanyBorough String	,TaxiPickUpLocation String, BridgeHighwayName String	,BridgeHighwayDirection String,
+    RoadRamp String, BridgeHighwaySegment String	,Latitude DOUBLE	,Longitude DOUBLE,Location String
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE ;
+
+LOAD DATA LOCAL INPATH 'home/shashank/nyc_311_calls.csv' OVERWRITE INTO TABLE etinosa_nyc_csv;
+
+SELECT * FROM etinosa_nyc_csv LIMIT 10;
+
+--2. GZIP
+CREATE EXTERNAL TABLE etinosa_gzip (
+    UniqueKey INT,	CreatedDate String,	ClosedDate	String, Agency String,	AgencyName String,	ComplaintType String,	
+    Descriptor String,	LocationType String,	IncidentZip INT ,	IncidentAddress String,	StreetName String,	
+    CrossStreet1 String,	CrossStreet2 String,	IntersectionStreet1 String,
+	IntersectionStreet2 String ,	AddressType String,	City String ,	Landmark String ,	
+    FacilityType String,	Status String ,	DueDate String,	ResolutionDescription String,	ResolutionActionUpdatedDate String ,
+    CommunityBoard String,	BBL INT, Borough String ,	XCoordinate INT,	YCoordinate INT,	
+    OpenDataChannelType String, ParkFacilityName String	, ParkBorough String	,VehicleType String, 	
+    TaxiCompanyBorough String	,TaxiPickUpLocation String, BridgeHighwayName String	,BridgeHighwayDirection String,
+    RoadRamp String, BridgeHighwaySegment String	,Latitude DOUBLE	,Longitude DOUBLE,Location String
+)
+STORED AS TEXTFILE
+TBLPROPERTIES('compression.codec'='org.apache.hadoop.io.compress.GzipCodec');
+
+
+--3. Insert Data
+
+INSERT OVERWRITE TABLE etinosa_gzip SELECT * FROM etinosa_nyc_csv; 
+
+
+
+--4
+
+GZIP Table vs CSV Table 
+
+hadoop fs -ls -lh /hive/warehouse/ 
+
+
+--5 gzip
+SELECT AgencyName, ComplaintType, City, COUNT(*) AS NumofCom
+FROM etinosa_gzip
+WHERE AddressType = 'ADDRESS'
+GROUP BY AgencyName, ComplaintType, City
+HAVING NumofCom > 100;
+
+--csv
+SELECT AgencyName, ComplaintType, City, COUNT(*) AS NumofCom
+FROM etinosa_nyc_csv
+WHERE AddressType = 'ADDRESS'
+GROUP BY AgencyName, ComplaintType, City
+HAVING NumofCom > 100;
+
+
+
+--Example
+CREATE TABLE person_avro
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+TBLPROPERTIES ('avro.schema.literal'='
+{
+  "type": "record",
+  "name": "Person",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {"name": "email", "type": "string"}
+  ]
+}')
+
+
+
+-- AVRO
+CREATE TABLE etinosa_nyc_avro
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+STORED AS AVRO
+TBLPROPERTIES ('avro.schema.literal'='
+{
+    "type": "record",
+    "name": "nyc",
+    "fields": [
+        {"name": "UniqueKey", "type": "int"},
+        {"name": "CreatedDate", "type": "string"},
+        {"name": "ClosedDate", "type": "string"},
+        {"name": "Agency", "type": "string"},
+        {"name": "AgencyName", "type": "string"},
+        {"name": "ComplaintType", "type": "string"},
+        {"name": "Descriptor", "type": "string"},
+        {"name": "LocationType", "type": "string"},
+        {"name": "IncidentZip", "type": "int"},
+        {"name": "IncidentAddress", "type": "string"},
+        {"name": "StreetName", "type": "string"},
+        {"name": "CrossStreet1", "type": "string"},
+        {"name": "CrossStreet2", "type": "string"},
+        {"name": "IntersectionStreet1", "type": "string"},
+        {"name": "IntersectionStreet2", "type": "string"},
+        {"name": "AddressType", "type": "string"},
+        {"name": "City", "type": "string"},
+        {"name": "Landmark", "type": "string"},
+        {"name": "FacilityType", "type": "string"},
+        {"name": "Status", "type": "string"},
+        {"name": "DueDate", "type": "string"},
+        {"name": "ResolutionDescription", "type": "string"},
+        {"name": "ResolutionActionUpdatedDate", "type": "string"},
+        {"name": "CommunityBoard", "type": "string"},
+        {"name": "BBL", "type": "int"},
+        {"name": "Borough", "type": "string"},
+        {"name": "XCoordinate", "type": "int"},
+        {"name": "YCoordinate", "type": "int"},
+        {"name": "OpenDataChannelType", "type": "string"},
+        {"name": "ParkFacilityName", "type": "string"},
+        {"name": "ParkBorough", "type": "string"},
+        {"name": "VehicleType", "type": "string"},
+        {"name": "TaxiCompanyBorough", "type": "string"},
+        {"name": "TaxiPickUpLocation", "type": "string"},
+        {"name": "BridgeHighwayName", "type": "string"},
+        {"name": "BridgeHighwayDirection", "type": "string"},
+        {"name": "RoadRamp", "type": "string"},
+        {"name": "BridgeHighwaySegment", "type": "string"},
+        {"name": "Latitude", "type": "double"},
+        {"name": "Longitude", "type": "double"},
+        {"name": "Location", "type": "string"}
+    ]
+}');
+
+
+
+-- Transfer Data
+INSERT INTO etinosa_nyc_avro
+SELECT *
+FROM etinosa_gzip
+
+
+
+CREATE TABLE etinosa_avro STORED AS AVRO AS SELECT * FROM etinosa_gzip;
+
+
+
+SELECT AgencyName, ComplaintType, City, COUNT(*) AS NumofCom
+FROM etinosa_avro
+WHERE AddressType = 'ADDRESS'
+GROUP BY AgencyName, ComplaintType, City
+HAVING NumofCom > 100;
+
+--ORC
+CREATE TABLE etinosa_nyc_orc STORED AS ORC AS SELECT * FROM etinosa_gzip;
+
+
+SELECT AgencyName, ComplaintType, City, COUNT(*) AS NumofCom
+FROM etinosa_nyc_orc
+WHERE AddressType = 'ADDRESS'
+GROUP BY AgencyName, ComplaintType, City
+HAVING NumofCom > 100;
